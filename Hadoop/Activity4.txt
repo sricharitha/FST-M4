@@ -1,0 +1,53 @@
+hive> CREATE TABLE files (line STRING);
+
+hive> LOAD DATA LOCAL INPATH '/file01.txt' INTO TABLE files;
+Loading data to table default.files
+OK
+Time taken: 0.763 seconds
+
+hive> SELECT explode(split(line, ' ')) AS word FROM files;
+OK
+Hello
+World
+Bye
+World
+Time taken: 2.963 seconds, Fetched: 4 row(s)
+
+hive>
+CREATE TABLE word_counts AS
+SELECT word, count(1) AS count FROM 
+(SELECT explode(split(line, ' ')) AS word FROM files) GROUP BY word
+ORDERBY word;
+
+CREATE TABLE word_counts AS (SELECT explode(split(line, ' ')) AS word FROM files)
+
+hive> CREATE TABLE word_counts AS (SELECT explode(split(line, ' ')) AS word FROM files);
+Query ID = root_20210911131229_c2e037f5-6145-4839-8b1b-2dc28ea9aaf0
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1631361685155_0003, Tracking URL = http://174700b19783:8088/proxy/application_1631361685155_0003/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1631361685155_0003
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2022-09-20 13:12:43,336 Stage-1 map = 0%,  reduce = 0%
+2022-09-20 13:12:49,813 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 5.42 sec
+MapReduce Total cumulative CPU time: 5 seconds 420 msec
+Ended Job = job_1631361685155_0003
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to directory hdfs://174700b19783:9000/user/hive/warehouse/.hive-staging_hive_2022-09-20_13-12-29_958_8584432312802225683-1/-ext-10002
+Moving data to directory hdfs://174700b19783:9000/user/hive/warehouse/word_counts
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1   Cumulative CPU: 5.42 sec   HDFS Read: 4278 HDFS Write: 97 SUCCESS
+Total MapReduce CPU Time Spent: 5 seconds 420 msec
+OK
+Time taken: 22.437 seconds
+
+hive> SELECT * FROM word_counts;
+OK
+Hello
+World
+Bye
+World
+Time taken: 0.161 seconds, Fetched: 4 row(s)
