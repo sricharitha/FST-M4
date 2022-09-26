@@ -1,0 +1,5 @@
+hive> SELECT COUNT(*) FROM episodeIV WHERE INSTR(line, 'Luke')>0;
+
+hive> SELECT COUNT(*) FROM episodeV WHERE INSTR(line, 'Luke')>0;
+
+hive> SELECT COUNT(*) FROM episodeVI WHERE INSTR(line, 'Luke')>0;
